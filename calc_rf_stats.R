@@ -1,12 +1,14 @@
 library(tools)
 
-workingDirectory <- "~/Desktop/"
-filePattern="*.rf"
+#' @param dataDirectory Character string of directory containing matrix files
+#' @param filePattern Character string identifying matrix files. Default=".rf"
+#' @return Total A data frame containing the statistics for each matrix file
 
-calc_rf_stats <- function(workingDirectory, filePattern="*.rf"){
+calc_rf_stats <- function(dataDirectory, filePattern=".rf"){
         
         # Get the matrix files for calculating stats
-        filenames <- list.files(path=workingDirectory, pattern=filePattern)
+        filenames <- list.files(path=dataDirectory, pattern=filePattern,
+                                full.names=TRUE)
         
         # Function for calculating matrix stats
         stats <- function(filename) {
@@ -32,7 +34,7 @@ calc_rf_stats <- function(workingDirectory, filePattern="*.rf"){
         
         # Add the names for each file as row.names for results
         row.names(result) <- lapply(X=filenames,
-                                    FUN=function(x){file_path_sans_ext(x)})
+                                    FUN=function(x){file_path_sans_ext(basename(x))})
         
         # Calculate normalised mean and add to results
         tot <- colSums(result)
@@ -44,4 +46,3 @@ calc_rf_stats <- function(workingDirectory, filePattern="*.rf"){
         return(Total)
 }
 
-calc_rf_stats(workingDirectory, filePattern)
